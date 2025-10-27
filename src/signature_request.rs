@@ -241,7 +241,7 @@ pub struct SignatureRequestResponse {
     pub attachments: Option<SignatureRequestResponseAttachment>,
     /// Form field response data from signers
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub response_data: Option<SignatureRequestResponseData>,
+    pub response_data: Option<Vec<SignatureRequestResponseData>>,
     /// Individual signature status for each signer
     pub signatures: Vec<SignatureRequestResponseSignatures>,
     /// Bulk send job ID if this was part of a bulk operation
