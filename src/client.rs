@@ -311,4 +311,31 @@ impl DropboxSignClient {
             Err(DropboxSignClientError::ResponseError(parsed.error))
         }
     }
+
+    pub async fn cancel_incomplete_signature_request(
+        &self,
+        signature_request_id: &str,
+    ) -> Result<StatusCode, DropboxSignClientError> {
+        let url = format!(
+            "{}/signature_request/cancel/{}",
+            API_URL, signature_request_id
+        );
+
+        let response = self
+            .client
+            .post(&url)
+            .basic_auth(&self.api_key, Some(""))
+            .send()
+            .await?;
+
+        let status = response.status();
+
+        if status != StatusCode::OK {
+            let body = response.text().await?;
+            let parsed: ErrorResponse = serde_json::from_str(&body)?;
+            return Err(DropboxSignClientError::ResponseError(parsed.error));
+        }
+
+        Ok(status)
+    }
 }
